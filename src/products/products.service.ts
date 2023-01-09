@@ -8,6 +8,7 @@ import { Repository } from 'typeorm';
 import { CreateProductDto } from './dto/create-product.dto';
 import { UpdateProductDto } from './dto/update-product.dto';
 import { Product } from './entities/product.entity';
+import { PaginationDto } from 'src/common/dtos/pagination.dto';
 
 @Injectable()
 export class ProductsService {
@@ -20,8 +21,6 @@ export class ProductsService {
 
   async create(createProductDto: CreateProductDto) {
     try {
-
-
       // crear instacia del producto
       const product = this.productRepository.create(createProductDto);
 
@@ -34,15 +33,20 @@ export class ProductsService {
     }
   }
 
-  findAll() {
-    return this.productRepository.find({});
+  findAll(paginationDto: PaginationDto) {
+    const { limit = 10, offset = 0 } = paginationDto;
+
+    return this.productRepository.find({
+      take: limit,
+      skip: offset,
+    });
   }
 
   async findOne(id: string) {
-    const product =  await this.productRepository.findOneBy({ id });
+    const product = await this.productRepository.findOneBy({ id });
 
-    if(!product) {
-      throw new NotFoundException(`Product with id ${ id } not found`);
+    if (!product) {
+      throw new NotFoundException(`Product with id ${id} not found`);
     }
 
     return product;
@@ -53,11 +57,9 @@ export class ProductsService {
   }
 
   async remove(id: string) {
-
-    const product = await this.findOne( id );
+    const product = await this.findOne(id);
 
     await this.productRepository.remove(product);
-
   }
 
   private handleDBExceptions(error: any) {
