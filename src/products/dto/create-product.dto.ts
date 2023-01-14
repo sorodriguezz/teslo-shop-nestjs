@@ -35,4 +35,9 @@ export class CreateProductDto {
   @IsArray()
   @IsOptional()
   tags: string[];
+
+  @IsString({ each: true }) //* Especifica si el valor validado es una matriz y cada uno de sus elementos debe validarse.
+  @IsArray()
+  @IsOptional()
+  images?: string[];
 }

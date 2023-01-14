@@ -4,12 +4,14 @@ import {
   InternalServerErrorException,
 } from '@nestjs/common/exceptions';
 import { InjectRepository } from '@nestjs/typeorm';
+
 import { Repository } from 'typeorm';
-import { CreateProductDto } from './dto/create-product.dto';
-import { UpdateProductDto } from './dto/update-product.dto';
-import { Product } from './entities/product.entity';
-import { PaginationDto } from 'src/common/dtos/pagination.dto';
 import { validate as isUUID } from 'uuid';
+
+import { CreateProductDto } from './dto/create-product.dto';
+import { PaginationDto } from 'src/common/dtos/pagination.dto';
+import { ProductImage, Product } from './entities';
+import { UpdateProductDto } from './dto/update-product.dto';
 
 @Injectable()
 export class ProductsService {
@@ -18,29 +20,46 @@ export class ProductsService {
   constructor(
     @InjectRepository(Product)
     private readonly productRepository: Repository<Product>,
+    @InjectRepository(ProductImage)
+    private readonly productImageRespository: Repository<ProductImage>,
   ) {}
 
   async create(createProductDto: CreateProductDto) {
     try {
+      const { images = [], ...productDetails } = createProductDto;
+
       // crear instacia del producto
-      const product = this.productRepository.create(createProductDto);
+      const product = this.productRepository.create({
+        ...productDetails,
+        images: images.map((image) =>
+          this.productImageRespository.create({ url: image }),
+        ),
+      });
 
       // guardar en base de datos
       await this.productRepository.save(product);
 
-      return product;
+      return { ...product, images: images };
     } catch (error) {
       this.handleDBExceptions(error);
     }
   }
 
-  findAll(paginationDto: PaginationDto) {
+  async findAll(paginationDto: PaginationDto) {
     const { limit = 10, offset = 0 } = paginationDto;
 
-    return this.productRepository.find({
+    const products = await this.productRepository.find({
       take: limit,
       skip: offset,
+      relations: {
+        images: true,
+      },
     });
+
+    return products.map(({ images, ...rest }) => ({ // aplana las imagenes
+      ...rest,
+      images: images.map((img) => img.url),
+    }));
   }
 
   async findOne(term: string) {
@@ -70,6 +89,7 @@ export class ProductsService {
     const product = await this.productRepository.preload({
       id: id,
       ...updateProductDto,
+      images: [],
     });
 
     if (!product)
