@@ -56,10 +56,19 @@ export class ProductsService {
       },
     });
 
-    return products.map(({ images, ...rest }) => ({ // aplana las imagenes
+    return products.map(({ images, ...rest }) => ({
+      // aplana las imagenes
       ...rest,
       images: images.map((img) => img.url),
     }));
+  }
+
+  async findOnePlain(term: string) {
+    const { images = [], ...rest } = await this.findOne(term);
+    return {
+      ...rest,
+      images: images.map((image) => image.url),
+    };
   }
 
   async findOne(term: string) {
@@ -68,12 +77,13 @@ export class ProductsService {
     if (isUUID(term)) {
       product = await this.productRepository.findOneBy({ id: term });
     } else {
-      const queryBuilder = this.productRepository.createQueryBuilder();
+      const queryBuilder = this.productRepository.createQueryBuilder('prod');
       product = await queryBuilder
         .where('UPPER(title) =:title or slug =:slug', {
           title: term.toUpperCase(),
           slug: term.toLowerCase(),
         })
+        .leftJoinAndSelect('prod.images', 'prodImages') // prod y prodImages son alias de las tablas
         .getOne();
     }
 
