@@ -14,8 +14,8 @@ import { CommonModule } from './common/common.module';
       database: process.env.DB_NAME,
       username: process.env.DB_USERNAME,
       password: process.env.DB_PASSWORD,
-      autoLoadEntities: true,
-      synchronize: true, // sacar en produccion
+      autoLoadEntities: true, // crea las entidades que se describa en el codigo
+      synchronize: true, // sincroniza siempre el codigo con la bd
     }),
     ProductsModule,
     CommonModule,
