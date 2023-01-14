@@ -123,7 +123,7 @@ export class ProductsService {
           this.productImageRespository.create({ url: image }),
         );
       } //else {
-        //product.images = await this.productImageRespository.findBy({ product: { id }});
+      //product.images = await this.productImageRespository.findBy({ product: { id }});
       //}
 
       await queryRunner.manager.save(product); // los query runner con manager no afecta en la bd hasta que se haga commit
@@ -153,5 +153,15 @@ export class ProductsService {
     throw new InternalServerErrorException(
       'Unexpected error, check server log',
     );
+  }
+
+  async deleteAllProducts() {
+    const query = this.productRepository.createQueryBuilder('product');
+
+    try {
+      return await query.delete().where({}).execute();
+    } catch (error) {
+      this.handleDBExceptions(error);
+    }
   }
 }
