@@ -7,8 +7,8 @@ import {
 } from '@nestjs/common';
 import { FilesService } from './files.service';
 import { FileInterceptor } from '@nestjs/platform-express';
-import { fileFilter } from './helpers/fileFilter.helper';
 import { diskStorage } from 'multer';
+import { fileNamer, fileFilter } from './helpers/';
 
 @Controller('files')
 export class FilesController {
@@ -19,7 +19,10 @@ export class FilesController {
     FileInterceptor('file', {
       fileFilter: fileFilter, // se envia la referencia
       // limits: { fileSize: 1000 } // limite tamaño de archivo
-      storage: diskStorage()
+      storage: diskStorage({
+        destination: './static/products', // donde guardar el archivo en filesystem
+        filename: fileNamer,
+      }),
     }),
   ) // interceptar las solicitudes y mutar los valores
   uploadProductImage(
@@ -28,6 +31,8 @@ export class FilesController {
     if (!file) {
       throw new BadRequestException('Make sure that the file is an image');
     }
+
+    console.log(file);
 
     return {
       fileName: file.originalname,
