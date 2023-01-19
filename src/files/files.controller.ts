@@ -48,8 +48,6 @@ export class FilesController {
 
     const secureUrl = `${file.filename}`;
 
-    return {
-      fileName: secureUrl,
-    };
+    return {secureUrl};
   }
 }
