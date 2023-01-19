@@ -6,7 +6,7 @@
 
 1. Clonar proyecto
 2. Instalar dependecias con `yarn install`
-3. Clonar archivo ``.env.template` y renombrar a `.env`
+3. Clonar archivo ```.env.template``` y renombrar a ```.env```
 4. Cambiar variables de entorno
 5. Levantar base de datos
 
@@ -20,4 +20,4 @@ docker-compose up -d
 http://localhost:3000/api/seed
 ```
 
-7. Levantar en modo de desarrollo `yarn start:dev`
+7. Levantar en modo de desarrollo ```yarn start:dev```
