@@ -1,12 +1,12 @@
 import { Module } from '@nestjs/common';
 import { ConfigModule } from '@nestjs/config';
-import { TypeOrmModule } from '@nestjs/typeorm';
-import { ProductsModule } from './products/products.module';
-import { CommonModule } from './common/common.module';
-import { SeedModule } from './seed/seed.module';
-import { FilesModule } from './files/files.module';
 import { ServeStaticModule } from '@nestjs/serve-static';
+import { TypeOrmModule } from '@nestjs/typeorm';
 import { join } from 'path';
+import { CommonModule } from './common/common.module';
+import { FilesModule } from './files/files.module';
+import { ProductsModule } from './products/products.module';
+import { SeedModule } from './seed/seed.module';
 
 @Module({
   imports: [
@@ -22,7 +22,7 @@ import { join } from 'path';
       synchronize: true, // sincroniza siempre el codigo con la bd
     }),
     ServeStaticModule.forRoot({
-      rootPath: join(__dirname, '..', 'públic'),
+      rootPath: join(__dirname, '..', 'public'),
     }),
     ProductsModule,
     CommonModule,
