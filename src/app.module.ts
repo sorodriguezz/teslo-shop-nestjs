@@ -22,7 +22,7 @@ import { SeedModule } from './seed/seed.module';
       synchronize: true, // sincroniza siempre el codigo con la bd
     }),
     ServeStaticModule.forRoot({
-      rootPath: join(__dirname, '..', 'public'),
+      rootPath: join(__dirname, '..', 'static'),
     }),
     ProductsModule,
     CommonModule,
