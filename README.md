@@ -5,7 +5,7 @@
 # Teslo API
 
 1. Clonar proyecto
-2. Instalar dependecias con `yarn install`
+2. Instalar dependecias con ```yarn install```
 3. Clonar archivo ```.env.template``` y renombrar a ```.env```
 4. Cambiar variables de entorno
 5. Levantar base de datos
