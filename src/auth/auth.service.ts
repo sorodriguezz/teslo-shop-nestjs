@@ -44,11 +44,11 @@ export class AuthService {
       select: { email: true, password: true }, // que en esta consulta vengan esos datos
     });
 
-    if(!user) {
+    if (!user) {
       throw new UnauthorizedException('Credentials are not valid (email)');
     }
 
-    if(!bcrypt.compareSync(password, user.password)){
+    if (!bcrypt.compareSync(password, user.password)) {
       throw new UnauthorizedException('Credentials are not valid (password)');
     }
 
