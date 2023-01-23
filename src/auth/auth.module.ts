@@ -11,14 +11,15 @@ import { ConfigModule, ConfigService } from '@nestjs/config';
   controllers: [AuthController],
   providers: [AuthService],
   imports: [
+    ConfigModule,
     TypeOrmModule.forFeature([User]),
     PassportModule.register({ defaultStrategyL: 'jwt' }),
     JwtModule.registerAsync({
       // registro asincrono de jwt
-      imports: [ConfigModule],
-      inject: [ConfigService],
+      imports: [ConfigModule], // se importa el modulo
+      inject: [ConfigService], // inyeccion del servicio
+      // inyeccion de dependecias - se usa como un controller
       useFactory: (configService: ConfigService) => {
-        // inyeccion de dependecias
         return {
           // se puede ocupar variable de entorno igual
           secret: configService.get('JWT_SECRET'),
