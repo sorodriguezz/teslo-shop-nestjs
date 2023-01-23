@@ -2,6 +2,7 @@ import {
   BadRequestException,
   Injectable,
   InternalServerErrorException,
+  UnauthorizedException,
 } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import * as bcrypt from 'bcrypt';
@@ -36,7 +37,22 @@ export class AuthService {
     }
   }
   async login(loginUserDto: LoginUserDto) {
-    return 'asdf';
+    const { password, email } = loginUserDto;
+
+    const user = await this.userRepository.findOne({
+      where: { email }, // busqueda por email
+      select: { email: true, password: true }, // que en esta consulta vengan esos datos
+    });
+
+    if(!user) {
+      throw new UnauthorizedException('Credentials are not valid (email)');
+    }
+
+    if(!bcrypt.compareSync(password, user.password)){
+      throw new UnauthorizedException('Credentials are not valid (password)');
+    }
+
+    return user;
   }
 
   // jamar regresa un valor con never

@@ -10,7 +10,9 @@ export class User {
   })
   email: string;
 
-  @Column('text')
+  @Column('text', {
+    select: false // se quita password al mostrar con orm
+  })
   password: string;
 
   @Column('text')
