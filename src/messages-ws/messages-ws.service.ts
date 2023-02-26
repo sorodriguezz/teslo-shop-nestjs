@@ -26,6 +26,8 @@ export class MessagesWsService {
     if (!user) throw new Error('User not found');
     if (!user.isActive) throw new Error('User not active');
 
+    this.checkUserConnection(user);
+
     this.connectedClients[client.id] = {
       socket: client,
       user: user,
@@ -42,5 +44,16 @@ export class MessagesWsService {
 
   getUserFullNameBySocketId(socketId: string) {
     return this.connectedClients[socketId].user.fullName;
+  }
+
+  private checkUserConnection(user: User) {
+    for (const clientId of Object.keys(this.connectedClients)) {
+      const connectedClient = this.connectedClients[clientId];
+
+      if (connectedClient.user.id === user.id) {
+        connectedClient.socket.disconnect();
+        break;
+      }
+    }
   }
 }
