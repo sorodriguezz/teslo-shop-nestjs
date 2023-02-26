@@ -65,9 +65,9 @@ export class Product {
   images?: ProductImage[];
 
   @ManyToOne(
-    () => User,
-    (user) => user.product,
-    { eager: true }
+    () => User, // se declara la entidad a la cual se relaciona
+    (user) => user.product, // que campo de la entidad ocuparemos
+    { eager: true } // carga la data cuando se consulta (por defecto es lazy)
   )
   user: User;
 
