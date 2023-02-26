@@ -23,15 +23,9 @@ export class SeedService {
   private async insertUsers() {
     const seedUsers = initialData.users;
 
-    const users: User[] = [];
+    const dbUsers = await this.userRepository.save(seedUsers);
 
-    seedUsers.forEach((user) => {
-      users.push(this.userRepository.create(user));
-    });
-
-    await this.userRepository.save(seedUsers);
-
-    return users[0]; // se envio para ocupar en runSeed e insertar los productos como admin
+    return dbUsers[0]; // se envio para ocupar en runSeed e insertar los productos como admin
   }
 
   private async deleteTables() {
