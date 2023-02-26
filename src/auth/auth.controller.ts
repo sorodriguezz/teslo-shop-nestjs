@@ -31,7 +31,7 @@ export class AuthController {
   testingPrivateRoute(
     @GetUser() user: User,
     @GetUser('email') userEmail: string,
-    @RawHeaders() rawHeaders: string[],
+    @RawHeaders() rawHeaders: string[], // obtiene la cabecera completa de la peticion
     @Headers() headers: IncomingHttpHeaders, // desde common
   ) {
     return {

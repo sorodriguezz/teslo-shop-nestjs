@@ -9,9 +9,10 @@ import { DataSource, Repository } from 'typeorm';
 import { validate as isUUID } from 'uuid';
 
 import { CreateProductDto } from './dto/create-product.dto';
-import { PaginationDto } from 'src/common/dtos/pagination.dto';
+import { PaginationDto } from '../common/dtos/pagination.dto';
 import { ProductImage, Product } from './entities';
 import { UpdateProductDto } from './dto/update-product.dto';
+import { User } from '../auth/entities/user.entity';
 
 @Injectable()
 export class ProductsService {
@@ -25,7 +26,7 @@ export class ProductsService {
     private readonly dataSource: DataSource,
   ) {}
 
-  async create(createProductDto: CreateProductDto) {
+  async create(createProductDto: CreateProductDto, user: User) {
     try {
       const { images = [], ...productDetails } = createProductDto;
 
@@ -35,6 +36,7 @@ export class ProductsService {
         images: images.map((image) =>
           this.productImageRespository.create({ url: image }),
         ),
+        user,
       });
 
       // guardar en base de datos
@@ -95,7 +97,7 @@ export class ProductsService {
     return product;
   }
 
-  async update(id: string, updateProductDto: UpdateProductDto) {
+  async update(id: string, updateProductDto: UpdateProductDto, user: User) {
     const { images, ...toUpdate } = updateProductDto;
 
     //* preload busca un producto por id y carga el dto para formar un Product
@@ -125,6 +127,8 @@ export class ProductsService {
       } //else {
       //product.images = await this.productImageRespository.findBy({ product: { id }});
       //}
+
+      product.user = user;
 
       await queryRunner.manager.save(product); // los query runner con manager no afecta en la bd hasta que se haga commit
 

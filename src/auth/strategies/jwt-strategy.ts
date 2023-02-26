@@ -20,6 +20,9 @@ export class JwtStrategy extends PassportStrategy(Strategy) {
     });
   }
 
+  // este metodo es por defecto en PassportStrategy configurado en el authModule
+  // para cambiar el nombre a este modulo agregar "callbackMethodName: 'validate2'" en
+  // el apartado de JwtModule.registerAsync
   async validate(payload: JwtPayload): Promise<User> {
     const { id } = payload;
 

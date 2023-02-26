@@ -1,4 +1,4 @@
-import { Module } from '@nestjs/common';
+import { Module } from '@nestjs/common/decorators';
 import { AuthService } from './auth.service';
 import { AuthController } from './auth.controller';
 import { TypeOrmModule } from '@nestjs/typeorm';
@@ -15,10 +15,10 @@ import { JwtStrategy } from './strategies/jwt-strategy';
     ConfigModule,
     TypeOrmModule.forFeature([User]),
     PassportModule.register({ defaultStrategy: 'jwt' }),
+    // registro asincrono de jwt - se carga solo cuando el usuario lo llame
     JwtModule.registerAsync({
-      // registro asincrono de jwt
-      imports: [ConfigModule], // se importa el modulo
-      inject: [ConfigService], // inyeccion del servicio
+      imports: [ConfigModule], // se importa el modulo para inyectar
+      inject: [ConfigService], // se inyecta el servicio como si fuera un constructor
       // inyeccion de dependecias - se usa como un controller
       useFactory: (configService: ConfigService) => {
         return {
