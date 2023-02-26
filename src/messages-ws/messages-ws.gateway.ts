@@ -24,21 +24,19 @@ export class MessagesWsGateway
     private readonly jwtService: JwtService,
   ) {}
 
-  handleConnection(client: Socket) {
+  async handleConnection(client: Socket) {
     const token = client.handshake.headers.authentication as string;
 
     let payload: JwtPayload;
 
     try {
       payload = this.jwtService.verify(token); // verificar token del payload
+      await this.messagesWsService.registerClient(client, payload.id);
     } catch (error) {
       client.disconnect(); // botar conexion del cliente
       return;
     }
 
-    console.log({ payload });
-
-    this.messagesWsService.registerClient(client);
     this.wss.emit(
       'clients-updated',
       this.messagesWsService.getConnectedClients(),
@@ -74,7 +72,7 @@ export class MessagesWsGateway
     // client.join('ventas')
 
     this.wss.emit('message-from-server', {
-      fullName: 'Soy yo',
+      fullName: this.messagesWsService.getUserFullNameBySocketId(client.id),
       message: payload.message || 'no-message',
     });
   }
