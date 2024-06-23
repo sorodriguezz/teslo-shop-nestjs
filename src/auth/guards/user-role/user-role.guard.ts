@@ -15,6 +15,7 @@ export class UserRoleGuard implements CanActivate {
   canActivate(
     context: ExecutionContext,
   ): boolean | Promise<boolean> | Observable<boolean> {
+    // obtiene la metadata de donde se llame el guard
     const validRoles: string[] = this.reflector.get(
       META_ROLES,
       context.getHandler(),
