@@ -14,12 +14,13 @@ import { JwtStrategy } from './strategies/jwt-strategy';
   imports: [
     ConfigModule,
     TypeOrmModule.forFeature([User]),
+    // Indicar estrategia por defecto para passport
     PassportModule.register({ defaultStrategy: 'jwt' }),
-    // registro asincrono de jwt - se carga solo cuando el usuario lo llame
+    // registro asincrono de jwt - obtener la configuracion de jwt desde el archivo .env
     JwtModule.registerAsync({
       imports: [ConfigModule], // se importa el modulo para inyectar
       inject: [ConfigService], // se inyecta el servicio como si fuera un constructor
-      // inyeccion de dependecias - se usa como un controller
+      // inyeccion de dependecias - se usa como un service
       useFactory: (configService: ConfigService) => {
         return {
           // se puede ocupar variable de entorno igual

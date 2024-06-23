@@ -57,7 +57,7 @@ export class AuthController {
   @Get('private2')
   @RoleProtected(ValidRoles.superUser)
   @SetMetadata('roles', ['admin', 'super-user']) // añade informacion extra al controlador
-  @UseGuards(AuthGuard(), UserRoleGuard)
+  @UseGuards(AuthGuard(), UserRoleGuard) // UserRoleGuard se envian sin crear la instancia
   privateRoute2(
     @GetUser() user: User
   ) {
